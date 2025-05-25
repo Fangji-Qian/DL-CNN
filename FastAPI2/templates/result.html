@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Snake Classifier - Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+        }
+
+        .image-row {
+            display: flex;
+            justify-content: center;
+        }
+
+        .image-box {
+            /* Max image width */
+            max-width: 500px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .image-box img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .result-info {
+            margin-top: 30px;
+        }
+
+        .field-label {
+            font-weight: bold;
+        }
+
+        .back-button {
+            margin-top: 40px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .back-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Snake Classification Result</h1>
+
+<div class="image-row">
+    <div class="image-box">
+        <h3>Uploaded Image</h3>
+        <img src="{{ uploaded_image_url }}" alt="Uploaded Image" />
+    </div>
+</div>
+
+<div class="result-info">
+    <p><span class="field-label">Species:</span> {{ species }}</p>
+    <p><span class="field-label">Country:</span> {{ country }}</p>
+    <p><span class="field-label">Continent:</span> {{ continent }}</p>
+    <p><span class="field-label">Genus:</span> {{ genus }}</p>
+    <p><span class="field-label">Family:</span> {{ family }}</p>
+    <p><span class="field-label">Venomous:</span> {{ 'Yes' if venomous else 'No' }}</p>
+    <p><span class="field-label">First Aid Instructions:</span></p>
+    <ul>
+        {% for step in first_aid %}
+        <li>{{ step }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Return button -->
+<a class="back-button" href="/">← Back to Upload</a>
+
+</body>
+</html>
