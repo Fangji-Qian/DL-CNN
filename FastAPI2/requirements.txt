@@ -7,4 +7,4 @@ fastapi~=0.115.12
 torchvision~=0.22.0
 ultralytics~=8.3.144
 protobuf~=5.29.4
-google-generativeai~=0.3.2
+google-generativeai

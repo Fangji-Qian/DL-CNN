@@ -124,8 +124,11 @@ async def predict(request: Request, file: UploadFile = File(...)):
     # LLM inference
     prompt = build_prompt(species, venomous)
     try:
-        info = json.loads(call_gemini(prompt))
-        advice = info.get("first_aid", DEFAULT_ADVICE[venomous])
+        info = call_gemini(prompt)
+        if info:
+            advice = info.get("first_aid", DEFAULT_ADVICE[venomous])
+        else:
+            advice = DEFAULT_ADVICE[venomous]
     except Exception:
         advice = DEFAULT_ADVICE[venomous]
 

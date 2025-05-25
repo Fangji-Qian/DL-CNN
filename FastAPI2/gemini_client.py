@@ -3,35 +3,47 @@ import json
 import google.generativeai as genai
 
 # Configuring the API
-client = genai.configure(api_key=os.getenv("AIzaSyAF9ytmiAj1qtJaA7zmeKvZXrg5FiDrOo4"))
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 # Generate prompt text for use in large language models
 def build_prompt(species: str, venomous: bool) -> str:
-    # Spell prompt according to snake species and toxicity
-    header = "You are an expert in snake bite first aid\n"
-    header += f"-Snake species：{species}\n"
-    header += f"- Is it toxic：{venomous}\n\n"
-    header += "Please output in JSON format：{\"species\":\"...\",\"venomous\":true|false,\"first_aid\":[\"Step1\",\"Step2\",...]}"
+    header = "You are an expert in snakebite first aid.\n"
+    header += f"- Snake species: {species}\n"
+    header += f"- Is it toxic: {venomous}\n\n"
+    header += (
+        "Please return a JSON object with the following format:\n"
+        "{\n"
+        "  \"species\": \"...\",\n"
+        "  \"venomous\": true|false,\n"
+        "  \"first_aid\": [\"Step 1\", \"Step 2\", ...],\n"
+        "  \"additional_notes\": \"...\"\n"
+        "}"
+    )
     return header
 
 # Calling Gemini Models to Generate Content
-def call_gemini(prompt: str, model: str = "gemini-1.5-flash") -> str:
+def call_gemini(prompt: str) -> dict:
     print("[DEBUG] prompt >>>", prompt)
-    response = client.models.generate_content(
-        model=model,
-        contents=prompt
-    )
-    text = response.text.strip()
 
-    # Remove the leading ```json
-    if text.startswith("```json"):
-        text = text[7:]
-    elif text.startswith("```"):
-        text = text[3:]
-    if text.endswith("```"):
-        text = text[:-3]
+    try:
+        response = model.generate_content(prompt)
+        text = response.text.strip()
 
-    print("[DEBUG] cleaned response <<<", text)
-    return text
+        if text.startswith("```json"):
+            text = text[7:]
+        elif text.startswith("```"):
+            text = text[3:]
+        if text.endswith("```"):
+            text = text[:-3]
+
+        print("[DEBUG] cleaned response <<<", text)
+
+        return json.loads(text)
+    except Exception as e:
+        print("[ERROR] Gemini failed:", e)
+        return None
+
 
 
